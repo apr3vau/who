@@ -75,12 +75,11 @@ alist ATTR-LIST of attributes into a list of strings and/or Lisp
 forms."
   (cl-declare (optimize speed space))
   (cl-loop with =var= = (gensym)
-	   for lst in attr-list
-	   for orig-attr = (car lst) and val = (cdr lst)
-	   for attr = (who-maybe-downcase orig-attr)
-	   unless (null val) ;; no attribute at all if VAL is NIL
-	   if (constantp val)
-	   if (and who--empty-attribute-syntax (eq val t)) ; special case for SGML and HTML5
+	   for cons in attr-list
+	   for attr = (who-maybe-downcase (car cons))
+	   unless (null (cdr cons)) ;; no attribute at all if (CDR CONS) is NIL
+	   if (constantp (cdr cons))
+	   if (and who--empty-attribute-syntax (eq (cdr cons) t)) ; special case for SGML and HTML5
 	   nconc (list " " attr)
 	   else
 	   nconc (list " "
@@ -88,18 +87,18 @@ forms."
 		       attr
 		       (format "=%c" who--attribute-quote-char)
 		       ;; value of attribute
-		       (cond ((eq val t)
-			      ;; VAL is T, use attribute's name
+		       (cond ((eq (cdr cons) t)
+			      ;; (CDR CONS) is T, use attribute's name
 			      attr)
 			     (t
 			      ;; constant form, PRINC it -
 			      ;; EVAL is OK here because of CONSTANTP
-			      (format "%s" (eval val))))
+			      (format "%s" (eval (cdr cons)))))
 		       (string who--attribute-quote-char))
 	   end
 	   else
 	   ;; do the same things as above but at runtime
-	   nconc (list `(let ((,=var= ,val))
+	   nconc (list `(let ((,=var= ,(cdr cons)))
 			  (cond ((null ,=var=))
 				((eq ,=var= t)
 				 ,(if who--empty-attribute-syntax
@@ -257,7 +256,7 @@ supplied."
 	(indent (plist-get (cdr var) :indent)))
     `(cl-macrolet ((htm (&body body)
 			`(who-with-html-output
-			  (list ,',printcharfun :indent ,,indent)
+			  (,',printcharfun :indent ,,indent)
 			  ,@body))
 		   (fmt (&rest args)
 			`(princ (format ,@args) ,',printcharfun))

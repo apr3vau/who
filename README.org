@@ -1,0 +1,51 @@
+* WHO - With-Html-Output HTML generater, A port of =cl-who= in Emacs.
+
+This is a simple port of Common Lisp =cl-who= package in Emacs Lisp.
+
+It can be used to generate HTML using lisp code.
+
+#+begin_src emacs-lisp
+(who-with-html-output
+ ((get-buffer-create "*scratch*") :prologue t :indent t)
+ (:html
+  (:head (:title "Hello"))
+  (:body
+   (:h2 "WHO For Emacs")
+   (:a :href "https://edicl.github.io/cl-who/"
+       "For more infomations"))))
+#+end_src
+
+Output in buffer:
+
+#+begin_src html
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Hello
+    </title>
+  </head>
+  <body>
+    <h2>WHO For Emacs
+    </h2>
+    <a href='https://edicl.github.io/cl-who/'>For more infomations
+    </a>
+  </body>
+</html>
+#+end_src
+
+** Differences between origin cl-who
+
+1. All functions are started with =who-= prefix and variables are with =who--=
+   prefix
+2. Optional =stream= argument are removed from macros =who-with-html-output= and
+   =who-with-html-output-to-string=;
+3. Using =:html5= as the default =html-mode= but not =:xml=;
+4. =setf= macro for =html-mode= is unavailable, using function
+   =who-set-html-mode= instead;
+5. =declare=s in =with-html-*= macros are unsupported;
+
+** Usage
+
+See [[https://edicl.github.io/cl-who/][cl-who homepage]]
+
