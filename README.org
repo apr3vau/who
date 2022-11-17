@@ -38,14 +38,22 @@ For more instructions, see [[https://edicl.github.io/cl-who/][cl-who homepage]].
 
 ** Differences between origin cl-who
 
-1. All functions are started with =who-= prefix and variables are with =who--=
-   prefix
+1. All functions are started with =who-= prefix and variables are started with
+   =who--= prefix
 2. Optional =stream= argument are removed from macros =who-with-html-output= and
    =who-with-html-output-to-string=;
-3. Using =:html5= as the default =html-mode= but not =:xml=;
-5. =declare=s in =with-html-*= macros are unsupported;
+3. Using =:html5= as the default =who-html-mode= instead of =:xml=;
+5. =cl-declare= form in =with-html-*= macros are unsupported;
+
+** Installation
+
+Clone this repo and add following lines to your configuration:
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/path/to/who")
+(require 'who)
+#+end_src
 
 ** Usage
 
 See [[https://edicl.github.io/cl-who/][cl-who homepage]].
-
