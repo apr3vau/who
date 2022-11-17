@@ -34,6 +34,8 @@ Output in buffer:
 </html>
 #+end_src
 
+For more instructions, see [[https://edicl.github.io/cl-who/][cl-who homepage]].
+
 ** Differences between origin cl-who
 
 1. All functions are started with =who-= prefix and variables are with =who--=
@@ -41,11 +43,9 @@ Output in buffer:
 2. Optional =stream= argument are removed from macros =who-with-html-output= and
    =who-with-html-output-to-string=;
 3. Using =:html5= as the default =html-mode= but not =:xml=;
-4. =setf= macro for =html-mode= is unavailable, using function
-   =who-set-html-mode= instead;
 5. =declare=s in =with-html-*= macros are unsupported;
 
 ** Usage
 
-See [[https://edicl.github.io/cl-who/][cl-who homepage]]
+See [[https://edicl.github.io/cl-who/][cl-who homepage]].
 

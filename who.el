@@ -4,37 +4,39 @@
 (require 'cl-macs)
 
 (defun who-html-mode ()
-  "Returns the current HTML mode. :SGML for \(SGML-)HTML, :XML for
-XHTML and :HTML5 for HTML5 (HTML syntax)."
+  "Returns the current HTML mode. :SGML for (SGML-)HTML, :XML for
+XHTML and :HTML5 for HTML5 (HTML syntax).
+
+Using (setf (who-html-mode) MODE) to set the output mode, to
+XHTML or (SGML-)HTML.
+MODE can be :SGML for HTML, :XML for XHTML or :HTML5 for
+HTML5 (HTML syntax)."
   who--html-mode)
 
-(defun who-set-html-mode (mode)
-  "Sets the output mode to XHTML or \(SGML-)HTML.
-MODE can be :SGML for HTML, :XML for XHTML or :HTML5 for HTML5 (HTML syntax)."
-  ;; It confused me that 'gv-define-setter' has no effect here...
-  ;; So I have to define a new function to do these assignments
+(gv-define-setter who-html-mode (mode)
+  ;; gv-setter of setf macro for who-html-mode
   `(cl-ecase ,mode
      ((:sgml)
-      (setq who--html-mode :sgml
-            who--empty-attribute-syntax t
+      (setq who--empty-attribute-syntax t
             who--empty-tag-end ">"
-            who--prologue "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"))
+            who--prologue "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"
+	    who--html-mode :sgml))
      ((:xml)
-      (setq who--html-mode :xml
-            who--empty-attribute-syntax nil
+      (setq who--empty-attribute-syntax nil
             who--empty-tag-end " />"
-            who--prologue "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"))
+            who--prologue "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+	    who--html-mode :xml))
      ((:html5)
-      (setq who--html-mode :html5
-            who--empty-attribute-syntax t
+      (setq who--empty-attribute-syntax t
             who--empty-tag-end ">"
-            who--prologue "<!DOCTYPE html>"))))
+            who--prologue "<!DOCTYPE html>"
+	    who--html-mode :html5))))
 
 (defun who-process-tag (sexp body-fn)
+  "Returns a string list corresponding to the `HTML' (in CL-WHO syntax) in SEXP.
+Uses the generic function WHO-CONVERT-TO-STRING-LIST internally.
+Utility function used by WHO-TREE-TO-TEMPLATE."
   (cl-declare (optimize speed space))
-  "Returns a string list corresponding to the `HTML' \(in CL-WHO
-syntax) in SEXP.  Uses the generic function CONVERT-TO-STRING-LIST
-internally.  Utility function used by TREE-TO-TEMPLATE."
   (let (tag attr-list body)
     (cond
       ((keywordp sexp)
@@ -61,7 +63,7 @@ internally.  Utility function used by TREE-TO-TEMPLATE."
     (who-convert-tag-to-string-list tag attr-list body body-fn)))
 
 (defun constantp (form &optional environment)
-  "A simple implementation of 'constantp' in Common Lisp.
+  "A simple simulation of 'constantp' in Common Lisp.
 
 True of any FORM that has a constant value: self-evaluating objects,
 keywords, defined constants, quote forms. Additionally the
@@ -70,7 +72,7 @@ ENVIRONMENT is ignored."
   (ignore-errors (if (equal form (eval form)))))
 
 (defun who-convert-attributes (attr-list)
-  "Helper function for CONVERT-TAG-TO-STRING-LIST which converts the
+  "Helper function for WHO-CONVERT-TAG-TO-STRING-LIST which converts the
 alist ATTR-LIST of attributes into a list of strings and/or Lisp
 forms."
   (cl-declare (optimize speed space))
@@ -116,9 +118,9 @@ forms."
 				      who--attribute-quote-char)))))))
 
 (defgeneric who-convert-tag-to-string-list (tag attr-list body body-fn)
-  (:documentation "Used by PROCESS-TAG to convert `HTML' into a list
+  (:documentation "Used by WHO-PROCESS-TAG to convert `HTML' into a list
 of strings.  TAG is a keyword symbol naming the outer tag, ATTR-LIST
-is an alist of its attributes \(the car is the attribute's name as a
+is an alist of its attributes (the car is the attribute's name as a
 keyword, the cdr is its value), BODY is the tag's body, and BODY-FN is
 a function which should be applied to BODY.  The function must return
 a list of strings or Lisp forms."))
@@ -211,8 +213,8 @@ flattened list of strings. Utility function used by TREE-TO-COMMANDS-AUX."
 	(push prologue template))
       (cl-flet ((emit-string-collector
 		 ()
-		 "Generate a WRITE-STRING statement for what is currently
-in STRING-COLLECTOR."
+		 "Generate a PRINC statement for what is currently in
+STRING-COLLECTOR."
 		 (list 'princ
 		       (who-string-list-to-string (nreverse string-collector))
 		       printcharfun)))
@@ -247,9 +249,13 @@ in STRING-COLLECTOR."
 
 (defmacro who-with-html-output (var &rest body)
   "Transform the enclosed BODY consisting of HTML as s-expressions
-into Lisp code to write the corresponding HTML as strings to VAR -
-which should either hold a stream or which'll be bound to STREAM if
-supplied."
+into Lisp code to write the corresponding HTML as strings using
+PRINC.
+
+Using PRINTCHARFUN to specify output. For more information, see
+'princ'.
+
+\(fn (PRINTCHARFUN &KEY PROLOGUE INDENT) BODY...)"
   (cl-declare (ignore prologue))
   (let ((printcharfun (car var))
 	(prologue (plist-get (cdr var) :prologue))
@@ -275,7 +281,9 @@ supplied."
 
 (defmacro who-with-html-output-to-string (var &rest body)
   "Transform the enclosed BODY consisting of HTML as s-expressions
-into Lisp code which creates the corresponding HTML as a string."
+into Lisp code which creates the corresponding HTML as a string.
+
+\(fn (&KEY PROLOGUE INDENT) BODY...)"
   `(with-output-to-string
      (who-with-html-output (nil ,@var) ,@body)))
 
