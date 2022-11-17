@@ -1,3 +1,14 @@
+;;; who-util.el --- Utility functions for WHO. -*- lexical-binding: t -*-
+;; See https://github.com/apr3vau/who for more infomations.
+
+;; Thank Edicl for his effort.
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'cl-macs)
 
 (defmacro who-with-unique-names (bindings &rest body)
@@ -201,3 +212,5 @@ argument is a lower-case character, NIL otherwise."
       string)))
 
 (provide 'who-util)
+
+;;; who-util.el ends here.

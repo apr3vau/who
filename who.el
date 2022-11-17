@@ -1,3 +1,14 @@
+;;; who.el --- With-Html-Output HTML generater, A port of 'cl-who' in Emacs. -*- lexical-binding: t -*-
+;; See https://github.com/apr3vau/who for more infomations.
+
+;; Thank Edicl for his effort.
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'who-specials)
 (require 'who-util)
 
@@ -295,3 +306,5 @@ into Lisp code which creates the corresponding HTML as a string.
 (defvar who-hyperdoc-base-uri "http://weitz.de/cl-who/")
 
 (provide 'who)
+
+;;; who.el ends here.

@@ -4,6 +4,10 @@ This is a simple port of Common Lisp =cl-who= package in Emacs Lisp.
 
 It can be used to generate HTML using lisp code.
 
+Thank Edicl for his effort.
+
+A simple example:
+
 #+begin_src emacs-lisp
 (who-with-html-output
  ((get-buffer-create "*scratch*") :prologue t :indent t)
@@ -36,7 +40,7 @@ Output in buffer:
 
 For more instructions, see [[https://edicl.github.io/cl-who/][cl-who homepage]].
 
-** Differences between origin cl-who
+** Differences between original cl-who
 
 1. All functions are started with =who-= prefix and variables are started with
    =who--= prefix
@@ -57,3 +61,7 @@ Clone this repo and add following lines to your configuration:
 ** Usage
 
 See [[https://edicl.github.io/cl-who/][cl-who homepage]].
+
+** Licence
+
+This port currently use the same [[https://opensource.org/licenses/bsd-license.php][BSD-style license]] with cl-who.

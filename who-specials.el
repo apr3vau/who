@@ -1,3 +1,14 @@
+;;; who-specials.el --- Special variables for WHO. -*- lexical-binding: t -*-
+;; See https://github.com/apr3vau/who for more infomations.
+
+;; Thank Edicl for his effort.
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+
+;;; Code:
+
 (defvar who--prologue
   "<!DOCTYPE html>"
   "This is the first line that'll be printed if the :PROLOGUE keyword
@@ -89,3 +100,5 @@ mode and HTML5 mode).  For all other tags, it will always generate
   "Used for indentation.")
 
 (provide 'who-specials)
+
+;;; who-specials.el ends here.
